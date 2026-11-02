@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "rsc-express",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "files": [
     "framework/app.js",
     "framework/entry.*.tsx",
@@ -17,8 +17,8 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitejs/plugin-rsc": "^0.5.35",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "rsc-html-stream": "^0.0.8",
     "typescript": "^5.9.3",
     "vite": "^8.3.5"
@@ -26,8 +26,8 @@
   "peerDependencies": {
     "express": "^5.2.1",
     "@types/express": "^5.0.6",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "scripts": {
     "dev": "vite dev",
