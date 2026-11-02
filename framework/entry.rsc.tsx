@@ -1,10 +1,10 @@
 import * as ReactServer from '@vitejs/plugin-rsc/rsc';
 
 import type { ComponentType, ReactElement } from 'react';
-import type { AppProps, RscPayload, ReturnValue } from './types';
+import type { AppProps, ReturnValue, RequestWithAdditionalInfo } from './types';
 
 
-export default async function handleRequest(request: Request): Promise<Response> {
+export default async function handleRequest(request: RequestWithAdditionalInfo): Promise<Response> {
 
     let rscStream: ReadableStream | null = null;
     const url = new URL(request.url);
@@ -51,7 +51,7 @@ export default async function handleRequest(request: Request): Promise<Response>
         // Convert RSC JSX to RSC payload
         
         rscStream = ReactServer.renderToReadableStream<ReactElement>(
-            App === null ? <h1>Cannot find component for path {path}</h1> : <App url={request.url} />
+            App === null ? <h1>Cannot find component for path {path}</h1> : <App url={request.url} headers={request.headers} additionalInfo={request.additionalInfo} />
         );
 
 
