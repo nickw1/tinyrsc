@@ -1,15 +1,23 @@
 import * as ReactServer from '@vitejs/plugin-rsc/rsc';
 
 import type { ComponentType, ReactElement } from 'react';
-import type { AppProps, ReturnValue, RequestWithAdditionalInfo } from './types';
+import {  getPendingResponseHeaders, getRequest, requestContext } from 'rsc-express/server';
+import type { AppProps, ReturnValue } from './types';
 
 
-export default async function handleRequest(request: RequestWithAdditionalInfo): Promise<Response> {
+export default async function handleRequest(request: Request) : Promise<Response> {
+    const pendingResponseHeaders = new Headers();
+    return requestContext.run({ request, headers: pendingResponseHeaders }, async() => {
+        return await doHandleRequest(request);
+    })
+}
 
+async function doHandleRequest(request: Request) : Promise<Response> {
+    
     let rscStream: ReadableStream | null = null;
     const url = new URL(request.url);
 
-    console.log(`Method: ${request.method} pathname ${url.pathname}`);
+    console.log(`Method: ${request.method} pathhname ${url.pathname}`);
 
     const noSsr = request.headers.get("x-no-ssr") ? true : false;
 
@@ -19,7 +27,6 @@ export default async function handleRequest(request: RequestWithAdditionalInfo):
 
     if (request.method == 'POST' && url.pathname.endsWith("_.rsc")) {
         console.log("rsc: Got a server function");
-
         const { status, returnValue } = await handleServerFunction(request);
 
         // Convert RSC JSX to RSC payload
@@ -27,14 +34,19 @@ export default async function handleRequest(request: RequestWithAdditionalInfo):
             returnValue
         );
         isServerFunction = true;
+        const headers = getPendingResponseHeaders();
+        headers?.append(
+            'content-type', 'text/x-component;charset=utf-8'
+        );
+        console.log('headers sent back: ', headers);
+        
         return new Response(rscStream, {
             status,
-            headers: {
-                'content-type': 'text/x-component;charset=utf-8'
-            }
+            headers
         });
     } else {
         console.log("Not a server function");
+        console.log(`request is null?: `, request===null, " or as getRequest(): ", getRequest()===null)
         let status = 200;
         const glob = import.meta.glob('/src/**/*.{js,jsx,ts,tsx}');
         const componentRoutes: { [path: string]: ComponentType<AppProps> } = {};
@@ -49,23 +61,25 @@ export default async function handleRequest(request: RequestWithAdditionalInfo):
 
 
         // Convert RSC JSX to RSC payload
-        
+
         rscStream = ReactServer.renderToReadableStream<ReactElement>(
-            App === null ? <h1>Cannot find component for path {path}</h1> : <App url={request.url} headers={request.headers} additionalInfo={request.additionalInfo} />
+            App === null ? <h1>Cannot find component for path {path}</h1> : <App url={request.url} headers={request.headers} />
         );
 
-
+        const headers = getPendingResponseHeaders();
         if (noSsr) {
             console.log('rsc: noSsr is true, so sending back the raw RSC stream');
+           
+            headers?.append('content-type', 'text/x-component;charset=utf-8');
+            
             return new Response(rscStream, {
                 status,
-                headers: {
-                    'content-type': 'text/x-component;charset=utf-8' // I presume this content type triggers the appropriate client action
-                }
+                headers
             });
         } else {
             console.log("rsc: sending data to ssr");
-           
+            headers?.append( 'content-type', 'text/html;charset=utf-8');
+
             const ssrEntryModule = await import.meta.viteRsc.import<
                 typeof import('./entry.ssr.tsx')
             >(
@@ -75,13 +89,12 @@ export default async function handleRequest(request: RequestWithAdditionalInfo):
 
             // Render the RSC stream to the HTML using the SSR module (i.e. server-side rendering)
             console.log("rsc: sending data to ssr");
-             console.log('before renderHTML:', rscStream.locked);
+            console.log('before renderHTML:', rscStream.locked);
             let htmlStream = await ssrEntryModule.renderHTML(rscStream) as ReadableStream;
             console.log("got an html stream back, sending it back to client")
+            
             return new Response(htmlStream, {
-                headers: {
-                    'Content-Type': 'text/html;charset=utf-8'
-                },
+                headers,
                 status
             });
 
@@ -106,11 +119,13 @@ async function handleServerFunction(request: Request) {
             ? await request.formData() : await request.text();
         // Decode the contents of the body
         const args = await ReactServer.decodeReply(body);
-        // Obtain the actual server action function from its actionId, I would presume
+
+        console.log('args for server function: ', args);
+        // Obtain the actual server action function from its actionId
         const action = await ReactServer.loadServerAction(actionId);
         try {
-            // This presumably calls the specified server action
-            const data = await action.apply(null, args);
+            // This calls the specified server action
+            const data = await action.apply(null, [...args, request]);
             // ... and return whatever it returns to the client
             returnValue = { ok: true, data };
         } catch (e) {

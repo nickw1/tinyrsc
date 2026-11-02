@@ -47,7 +47,7 @@ ReactClient.setServerCallback(async (id, args) => {
 });
 
 export async function refreshCallback() {
-    console.log(`client: fetching ${window.location.href}`);
+    console.log(`client: refreshCallback: fetching ${window.location.href}`);
 
     try {
         if (root !== null) {
@@ -57,7 +57,7 @@ export async function refreshCallback() {
                     'x-no-ssr': '1'
                 }
             }));
-            console.log('Got tree');
+            console.log('Got tree - rendering it');
             root.render(tree);
             console.log('Tree rendered');
 

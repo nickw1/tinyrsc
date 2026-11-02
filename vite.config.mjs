@@ -11,7 +11,11 @@ export default defineConfig({
     ],
     build: {
         lib: {
-            entry: { main: resolve(import.meta.dirname, 'framework/main.ts'), client: resolve(import.meta.dirname, 'framework/client.ts') },
+            entry: { 
+                main: resolve(import.meta.dirname, 'framework/main.ts'), 
+                client: resolve(import.meta.dirname, 'framework/client.ts'),
+                server: resolve(import.meta.dirname, 'framework/server.ts'),
+            },
             name: 'rsc-express',
             fileName: (format, entryName) => `rsc-express.${entryName == "main" ? "": `${entryName}.`}${format}.js`,
             formats: ["es"]

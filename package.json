@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "rsc-express",
-  "version": "0.0.3",
+  "version": "0.0.9",
   "files": [
     "framework/app.js",
     "framework/entry.*.tsx",
@@ -12,11 +12,14 @@
     "react-element-to-jsx-string": "^17.0.1"
   },
   "devDependencies": {
+    "@remix-run/node-fetch-server": "^1.0.0",
+    "@types/express": "^5.0.6",
     "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitejs/plugin-rsc": "^0.5.35",
+    "express": "^5.3.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "rsc-html-stream": "^0.0.8",
@@ -24,8 +27,6 @@
     "vite": "^8.3.5"
   },
   "peerDependencies": {
-    "express": "^5.2.1",
-    "@types/express": "^5.0.6",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
@@ -42,6 +43,10 @@
     "./client": {
       "import": "./dist/rsc-express.client.es.js",
       "types": "./framework/types/client.ts"
+    },
+    "./server": {
+      "import": "./dist/rsc-express.server.es.js",
+      "types": "./framework/types/index.ts"
     },
     "./entry.rsc": "./framework/entry.rsc.tsx",
     "./entry.ssr": "./framework/entry.ssr.tsx",

@@ -1,13 +1,12 @@
-console.log("placeholder");
 
-import { createServer, RunnableDevEnvironment } from 'vite';
-import type { Express } from 'express';
+import { createServer, type ViteDevServer } from 'vite';
 import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import react from '@vitejs/plugin-react';
 import rsc from '@vitejs/plugin-rsc';
+import type { RequestHandler, ConnectApp } from 'rsc-express/server';
 
-export async function createDevServer(app: Express) {
+export async function createDevServer() {
 
     const root = process.cwd();
 
@@ -30,17 +29,24 @@ export async function createDevServer(app: Express) {
     });
 
 
-    app.use(vite.middlewares);
+    return vite;
+}
 
-    const rscEnv = vite.environments.rsc as RunnableDevEnvironment;
-
-    // Use the runner of the RSC environment to import the RSC entrypoint
-    const handleRequest = (await rscEnv.runner.import(require.resolve('rsc-express/entry.rsc'))).default;
-
+export async function getRequestHandler(): Promise<RequestHandler> {
+    if (process.env.NODE_ENV !== "production") {
+        throw "Error: Can only use getRequestHandler() in production mode";
+    }
+    const handleRequest = (await import(resolve(process.cwd(), 'dist/rsc/index'))).default;
     return handleRequest;
 }
 
-export async function getRequestHandler(app: Express) {
-    const handleRequest = (process.env.NODE_ENV == 'development') ? await createDevServer(app) : (await import(resolve(process.cwd(), 'dist/rsc/index'))).default;
-    return handleRequest;
+export async function init(app?: ConnectApp): Promise<{viteServer: ViteDevServer | null, requestHandler: RequestHandler | null}> {
+    if (process.env.NODE_ENV === 'development') {
+        const viteServer = await createDevServer();
+        app?.use(viteServer.middlewares);
+        return { viteServer, requestHandler: null }
+    } else {
+        const requestHandler = await getRequestHandler();
+        return { requestHandler, viteServer: null };
+    }
 }

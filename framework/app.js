@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { resolve } from 'node:path';
-import { createBuilder, createServer } from "vite";
+import { createBuilder } from "vite";
 import react from '@vitejs/plugin-react';
 import rsc from '@vitejs/plugin-rsc';
 import { createRequire } from 'node:module';
