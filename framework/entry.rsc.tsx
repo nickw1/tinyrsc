@@ -2,7 +2,7 @@ import * as ReactServer from '@vitejs/plugin-rsc/rsc';
 
 import type { ComponentType, ReactElement } from 'react';
 import {  getPendingResponseHeaders, getRequest, requestContext } from 'rsc-express/server';
-import type { AppProps, ReturnValue } from './types';
+import type { ReturnValue } from './types';
 
 
 export default async function handleRequest(request: Request) : Promise<Response> {
@@ -49,10 +49,10 @@ async function doHandleRequest(request: Request) : Promise<Response> {
         console.log(`request is null?: `, request===null, " or as getRequest(): ", getRequest()===null)
         let status = 200;
         const glob = import.meta.glob('/src/**/*.{js,jsx,ts,tsx}');
-        const componentRoutes: { [path: string]: ComponentType<AppProps> } = {};
+        const componentRoutes: { [path: string]: ComponentType } = {};
         for (const [path, loadModule] of Object.entries(glob)) {
             const replace = path.replace(/^\/src|(index)?\.(jsx|tsx|js|ts)$/g, "").toLowerCase();
-            componentRoutes[replace] = ((await loadModule() as any).default) as ComponentType<AppProps>;
+            componentRoutes[replace] = ((await loadModule() as any).default);
         }
         const path = url.pathname;
 
@@ -63,7 +63,7 @@ async function doHandleRequest(request: Request) : Promise<Response> {
         // Convert RSC JSX to RSC payload
 
         rscStream = ReactServer.renderToReadableStream<ReactElement>(
-            App === null ? <h1>Cannot find component for path {path}</h1> : <App url={request.url} headers={request.headers} />
+            App === null ? <h1>Cannot find component for path {path}</h1> : <App />
         );
 
         const headers = getPendingResponseHeaders();

@@ -3,7 +3,6 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { ReactElement } from 'react';
 import { Connect, ViteDevServer } from 'vite';
 
-export type AppProps = { url: string, headers: Headers };
 export type RscPayload = { root: ReactElement, data?: any };
 export type ReturnValue = { ok: boolean, data: unknown }
 export type RequestHandler = (request: Request) => Promise<Response>;

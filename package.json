@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "rsc-express",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "files": [
     "framework/app.js",
     "framework/entry.*.tsx",
