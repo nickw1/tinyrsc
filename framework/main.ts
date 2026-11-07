@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import react from '@vitejs/plugin-react';
 import rsc from '@vitejs/plugin-rsc';
-import type { RequestHandler, ConnectApp } from 'rsc-express/server';
+import type { RequestHandler, ConnectApp } from 'tinyrsc/server';
 
 export async function createDevServer() {
 
@@ -20,9 +20,9 @@ export async function createDevServer() {
             react(),
             rsc({
                 entries: {
-                    rsc: require.resolve('rsc-express/entry.rsc'),
-                    ssr: require.resolve('rsc-express/entry.ssr'),
-                    client: require.resolve('rsc-express/entry.client')
+                    rsc: require.resolve('tinyrsc/entry.rsc'),
+                    ssr: require.resolve('tinyrsc/entry.ssr'),
+                    client: require.resolve('tinyrsc/entry.client')
                 }
             })
         ],

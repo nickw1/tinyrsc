@@ -1,7 +1,7 @@
 {
   "type": "module",
-  "name": "rsc-express",
-  "version": "0.0.10",
+  "name": "tinyrsc",
+  "version": "0.0.1",
   "files": [
     "framework/app.js",
     "framework/entry.*.tsx",
@@ -37,15 +37,15 @@
   "bin": "framework/app.js",
   "exports": {
     ".": {
-      "import": "./dist/rsc-express.es.js",
+      "import": "./dist/tinyrsc.es.js",
       "types": "./framework/types/index.ts"
     },
     "./client": {
-      "import": "./dist/rsc-express.client.es.js",
+      "import": "./dist/tinyrsc.client.es.js",
       "types": "./framework/types/client.ts"
     },
     "./server": {
-      "import": "./dist/rsc-express.server.es.js",
+      "import": "./dist/tinyrsc.server.es.js",
       "types": "./framework/types/index.ts"
     },
     "./entry.rsc": "./framework/entry.rsc.tsx",

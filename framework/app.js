@@ -9,9 +9,9 @@ const cwd = process.cwd();
 
 
 const require = createRequire(resolve(cwd, 'package.json'));
-const ssrFile = require.resolve('rsc-express/entry.ssr');
-const rscFile = require.resolve('rsc-express/entry.rsc');
-const clientFile = require.resolve('rsc-express/entry.client');
+const ssrFile = require.resolve('tinyrsc/entry.ssr');
+const rscFile = require.resolve('tinyrsc/entry.rsc');
+const clientFile = require.resolve('tinyrsc/entry.client');
 
 
 const builder = await createBuilder({

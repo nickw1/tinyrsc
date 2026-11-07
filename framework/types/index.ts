@@ -14,6 +14,6 @@ export declare function getRequestHandler(): RequestHandler;
 export declare function getRequest(): Request | undefined;
 export declare function getPendingResponseHeaders(): Headers | undefined;
 
-declare module 'rsc-express/server' {
+declare module 'tinyrsc/server' {
     const requestContext: AsyncLocalStorage<{request: Request, headers: Headers}>;
 }

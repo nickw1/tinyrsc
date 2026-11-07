@@ -1,7 +1,7 @@
 import * as ReactServer from '@vitejs/plugin-rsc/rsc';
 
 import type { ComponentType, ReactElement } from 'react';
-import {  getPendingResponseHeaders, getRequest, requestContext } from 'rsc-express/server';
+import {  getPendingResponseHeaders, getRequest, requestContext } from 'tinyrsc/server';
 import type { ReturnValue } from './types';
 
 

@@ -3,7 +3,7 @@ import { hydrateRoot } from 'react-dom/client';
 
 import { rscStream } from 'rsc-html-stream/client';
 import type { ReturnValue } from './types';
-import { setCallback } from 'rsc-express/client';
+import { setCallback } from 'tinyrsc/client';
 import * as ReactClient from '@vitejs/plugin-rsc/browser';
 
 
