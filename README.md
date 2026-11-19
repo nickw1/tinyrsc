@@ -67,3 +67,14 @@ app.listen(PORT, () => {
 })
 
 ```
+
+## How well does it work and what problems may arise?
+
+I have now moved my [lilt](https://github.com/nickw1/lilt) tool, which is a non-trivial medium-sized app, to `tinyrsc` and have had no problems so far. This app makes use of RSCs, client components, and server functions, and works with a few third-party npm packages. In particular, it uses all of the following React-based packages, and all work fine:
+
+- [`markdown-to-jsx`](https://github.com/quantizor/markdown-to-jsx)
+- [`html-react-parser`](https://github.com/remarkablemark/html-react-parser)
+- [`react-modal`](https://github.com/reactjs/react-modal)
+- [`react-feather`](https://github.com/feathericons/react-feather)
+
+Problems may arise with a library which uses browser-based APIs (such as `window`) in the global scope. This code will be processed by Server-Side Rendering and thus will cause errors due to `window` not existing server-side. Please open an issue if you find a third-party library which doesn't play nicely with `tinyrsc`.
