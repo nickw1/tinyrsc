@@ -22,7 +22,7 @@ It's intended to be used not as something to handle all your app needs, but to f
 
 Full documentation will follow. For now, here is a sample using Express. Note that you add your React components to the `src` directory; in future, this will be configurable, but not
 just yet. So if you create an `index.tsx` RSC in `src`, this will become your app's main
-index page.
+index page, and any subdirectories are mapped to URLs with filesystem routing. So for example an `index.tsx` inside the subdirectory `about` will be accessible via the `/about` endpoint.
 
 ```typescript
 import express, { Request as ExpressRequest, Response as ExpressResponse } from 'express';
@@ -44,7 +44,7 @@ const { requestHandler } = await init(app);
 if (requestHandler) {
     app.use('/', async (req: ExpressRequest, res: ExpressResponse) => {
         try {
-            // @vitejs/plugin-react, and by extension tinyrsc, make use of standard Web
+            // @vitejs/plugin-rsc, and by extension tinyrsc, make use of standard Web
             // fetch Request and Response objects. Thus we need to convert our Express
             // Request to a fetch Request. This makes use of the third-party package
             // @remix-run/node-fetch-server
@@ -67,6 +67,10 @@ app.listen(PORT, () => {
 })
 
 ```
+
+To build your app, use `npx tinyrsc build`.
+
+At the moment, `tinyrsc` is not on NPM so you'll need to clone this repo and build the tarball: `npm run build`, as always.
 
 ## How well does it work and what problems may arise?
 
