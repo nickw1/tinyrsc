@@ -3,8 +3,6 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 
-console.log(`In config, cwd is ${process.cwd()} dirname ${import.meta.dirname}`);
-
 export default defineConfig({
     plugins: [
         react()

@@ -1,7 +1,4 @@
 
-
-console.log('*** initialising server module');
-
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 export const requestContext = new AsyncLocalStorage<{request: Request, headers: Headers}>();

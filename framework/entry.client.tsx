@@ -24,7 +24,6 @@ const root = hydrateRoot(
 // https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-rsc/examples/basic/src/framework/entry.browser.tsx
 
 ReactClient.setServerCallback(async (id, args) => {
-    console.log(`client: Detected server action request: ID is ${id}`);
     const url = new URL(window.location.href);
     url.pathname += "_.rsc";
     const action = {
@@ -38,8 +37,6 @@ ReactClient.setServerCallback(async (id, args) => {
         method: 'POST',
         body: action.body
     });
-    console.log("Headers of created request:");
-    console.log(renderRequest.headers);
     const payload = await ReactClient.createFromFetch<ReturnValue>(fetch(renderRequest));
     const { ok, data } = payload;
     if (!ok) throw data;
@@ -47,7 +44,7 @@ ReactClient.setServerCallback(async (id, args) => {
 });
 
 export async function refreshCallback() {
-    console.log(`client: refreshCallback: fetching ${window.location.href}`);
+
 
     try {
         if (root !== null) {
@@ -57,12 +54,10 @@ export async function refreshCallback() {
                     'x-no-ssr': '1'
                 }
             }));
-            console.log('Got tree - rendering it');
             root.render(tree);
-            console.log('Tree rendered');
 
         } else {
-            console.log("cannot render tree - root is null");
+            console.error("cannot render tree - root is null");
         }
     } catch (e) {
         console.error('refresh(): Error', e);
