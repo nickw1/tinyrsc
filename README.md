@@ -72,6 +72,31 @@ To build your app, use `npx tinyrsc build`.
 
 At the moment, `tinyrsc` is not on NPM so you'll need to clone this repo and build the tarball: `npm run build`, as always.
 
+### Other useful features
+
+To obtain the `Request` object from either an RSC or a server function, use `getRequest()`, e.g.:
+
+```tsx
+import { getRequest } from 'tinyrsc/server';
+export default function App() {
+    const request = getRequest()!;
+}
+```
+
+To refresh the current component tree without page reload, by requesting RSC payload for the current component and applying it to the tree, use `refresh()`:
+
+```typescript
+import { refresh } from 'tinyrsc/client';
+// ...
+refresh();
+```
+
+To obtain the pending response headers from either an RSC or a server function, use `getPendingResponseHeaders()`. `tinyrsc` creates a `Headers` object for the response as soon as the RSC entrypoint starts executing, which is useful for APIs that expect response headers, for example `iron-session`.
+
+```tsx
+import { getPendingResponseHeaders } from 'tinyrsc/server';
+```
+
 ## How well does it work and what problems may arise?
 
 I have now moved my [lilt](https://github.com/nickw1/lilt) tool, which is a non-trivial medium-sized app, to `tinyrsc` and have had no problems so far. This app makes use of RSCs, client components, and server functions, and works with a few third-party npm packages. In particular, it uses all of the following packages, and all work fine:
