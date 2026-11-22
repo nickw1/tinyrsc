@@ -1,6 +1,6 @@
 # tinyrsc
 
-A simple, some might say simplistic, React Server Components micro-framework, based on [Vite's RSC plugin, `@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc).
+A simple, lightweight and minimalist React Server Components micro-framework, based on [Vite's RSC plugin, `@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc). Currently in early development, though usable.
 
 ## Why
 
@@ -15,7 +15,7 @@ Rather than use another, larger framework such as Next.js I discovered Vite's lo
 
 As stated above, `tinyrsc` is a very small and minimalist micro-framework. It does not try to do more than what I'd consider the absolute fundamentals of RSCs, i.e. RSCs themselves, server-side rendering, client components, server functions, a filesystem router (easy due to the Vite plugin's globbing API) and component refresh.
 
-It's intended to be used not as something to handle all your app needs, but to focus on the RSC and React part of your app and that alone. It's intended to be used with a standard server framework (it works nicely with Express) and the philosophy is to leave that standard server framework to handle common app tasks such as authentication, middleware, and so on.
+It's intended to be used not as something to handle all your app needs, but to focus on the RSC and React part of your app and that alone. It's intended to be used with a standard server framework (it works nicely with Express) and the philosophy is to leave that standard server framework to handle common app tasks such as middleware, API routes, and so on.
 
 
 ## Sample code
@@ -23,6 +23,8 @@ It's intended to be used not as something to handle all your app needs, but to f
 Full documentation will follow. For now, here is a sample using Express. Note that you add your React components to the `src` directory; in future, this will be configurable, but not
 just yet. So if you create an `index.tsx` RSC in `src`, this will become your app's main
 index page, and any subdirectories are mapped to URLs with filesystem routing. So for example an `index.tsx` inside the subdirectory `about` will be accessible via the `/about` endpoint.
+
+I intend to expand the filesystem router to add such things as parameterised pages and error handling, though note that you can get the full URL via the standard `Request` object, as described below.
 
 ```typescript
 import express, { Request as ExpressRequest, Response as ExpressResponse } from 'express';
@@ -39,6 +41,14 @@ app.get(/assets\/.*$/, express.static('dist/client'));
 // Initialise tinyrsc. This will check whether NODE_ENV is "development" or "production".
 // If "development", it will spin up a Vite dev server to handle your requests.
 // If "production", it will return an object containing a tinyrsc RequestHandler.
+//
+// You can provide a Connect-compatible app (e.g. Express app) as an argument; if so, it will
+// attach the Vite middlewares to it automatically.
+//
+// If not, note that in development mode, the object returned by init() includes a "viteServer"
+// property, which is a ViteDevServer, so you can attach the Vite middlewares to your app object
+// manually.
+
 const { requestHandler } = await init(app);
 // If we have a request handler (i.e. we are in production mode...)
 if (requestHandler) {
@@ -91,7 +101,7 @@ import { refresh } from 'tinyrsc/client';
 refresh();
 ```
 
-To obtain the pending response headers from either an RSC or a server function, use `getPendingResponseHeaders()`. `tinyrsc` creates a `Headers` object for the response as soon as the RSC entrypoint starts executing, which is useful for APIs that expect response headers, for example `iron-session`.
+To obtain the pending response headers from either an RSC or a server function, use `getPendingResponseHeaders()`. `tinyrsc` creates a `Headers` object for the response as soon as the RSC entrypoint starts executing, which is useful if you want to add custom response headers, or for APIs that expect response headers, for example `iron-session`.
 
 ```tsx
 import { getPendingResponseHeaders } from 'tinyrsc/server';
